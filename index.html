@@ -1,139 +1,159 @@
-<meta charset="utf-8">
-
 <head>
-    <title>----  ADIVINHAÇÃO  ----</title>
-</head>
-<style>
-    body {background-color: rgb(138, 85, 36); font-size: large;}
-    
-    
-</style>
-
-<div style="text-align:center">
-
-<br><br><br><br><br>
-
-    
+    <meta charset="utf-8">
 
 
-<input/>
-<br>
-<br>
-<button><strong>Tentar adivinhar</strong></button>
-
-
-<script>
-
-    var input = document.getElementById("input");
-    
-    
-
-    var numero = parseInt(prompt("Escolha uma quantidade de números de 1 a 100 para serem sorteados"))
-
-    while (numero > 100 || numero <= 0) {
-
-        numero = parseInt(prompt("Escolha uma quantidade de números de 1 a 100 para serem sorteados"))
-
-    }
-    
-        function sorteia() {
-
-            return Math.round(Math.random() * 100);
-
+    <title>---- ADIVINHAÇÃO ----</title>
+    <style>
+        body {
+            background-color: rgb(138, 85, 36);
+            font-size: large;
         }
+    </style>
+</head>
 
-        function sorteiaNumeros(quant) {
+<body>
+    <div style="text-align:center">
 
-            var segredos = [];
-            var n = 1;
-            
-            while (n <= quant) {
+        <br><br><br><br><br>
 
-                var nAleatorio = sorteia();
-                var repetido = false;
 
-                if ( nAleatorio !== 0 ) {
+        <h2>Agora tente adivinhar
+            <br>
+            algum dos números sorteados
+            <br>
+            <br>
+            Você tem 3 chances, boa sorte !!
+        </h2>
+        <br>
+        <input id="chute"/>
+        <br>
+        <br>
 
-                    
+        <button type="button" id="botao" autofocus><strong>Tentar adivinhar</strong></button>
 
-                    for (var posicao = 0; posicao < segredos.length; posicao++) {
 
-                            if ( segredos[posicao] == nAleatorio ) {
+        <script>
 
-                                    repetido = true;
-                                    break;
+            const textbox = document.getElementById("chute");
+            textbox.addEventListener("keypress", function onEvent(event) {
+                if (event.key === "Enter") {
+                    document.getElementById("botao").click();
+                }
+            })
+
+            var input = document.getElementById("chute");
+
+
+
+            var numero = parseInt(prompt("Escolha uma quantidade de números de 1 a 100 para serem sorteados"))
+
+            while (numero > 100 || numero <= 0) {
+
+                numero = parseInt(prompt("Escolha uma quantidade de números de 1 a 100 para serem sorteados"))
+
+            }
+
+            function sorteia() {
+
+                return Math.round(Math.random() * 100);
+
+            }
+
+            function sorteiaNumeros(quant) {
+
+                var segredos = [];
+                var n = 1;
+
+                while (n <= quant) {
+
+                    var nAleatorio = sorteia();
+                    var repetido = false;
+
+                    if (nAleatorio !== 0) {
+
+
+
+                        for (var posicao = 0; posicao < segredos.length; posicao++) {
+
+                            if (segredos[posicao] == nAleatorio) {
+
+                                repetido = true;
+                                break;
 
                             }
 
+                        }
+
+                        if (repetido == false) {
+
+                            segredos.push(nAleatorio);
+                            n++;
+
+                        }
                     }
 
-                    if ( repetido == false ) {
-
-                        segredos.push(nAleatorio);
-                        n++;
-
-                    }
                 }
-
+                return segredos
             }
-            return segredos
-        }
 
-    var segredos = sorteiaNumeros(numero)
+            var segredos = sorteiaNumeros(numero)
 
-//   ---------------------------------------------------------------------- CHUTE
+            //   ---------------------------------------------------------------------- CHUTE
 
 
-    console.log(segredos);
+            console.log(segredos);
 
 
 
 
-        var chute = document.querySelector("input");
-        chute.focus();
+            var chute = document.getElementById("chute");
+            chute.focus();
 
-        var button = document.querySelector("button");
-        button.onclick = verifica;
-        
-        var tentativas = 0
+            var button = document.getElementById("botao");
+            button.onclick = verifica;
+
+            var tentativas = 0
 
             function verifica() {
 
-                
 
-                    var achou = false
 
-                        for (posicao = 0; posicao < segredos.length; posicao++) {
+                var achou = false
 
-                            if ( segredos[posicao] == parseInt(chute.value) ) {
+                for (posicao = 0; posicao < segredos.length; posicao++) {
 
-                                alert("Parabens !! ACERTOU !!");
-                                alert("Aperte OK para jogar novamente");
-                                achou = true
-                                location.reload()
-                                
+                    if (segredos[posicao] == parseInt(chute.value)) {
 
-                            }
-                        }
-                    if ( achou == false ) {
-                        alert("Voce Errou!");
+                        alert("Parabens !! ACERTOU !!");
+                        alert("Aperte OK para jogar novamente");
+                        achou = true;
+                        location.reload();
+
+
                     }
+                }
+                if (achou == false) {
+                    alert("Voce Errou!");
+                }
 
-                    chute.value = "";
-                    chute.focus();
-                    tentativas = tentativas + 1
-                    
-                    // IMPLEMENTAR TENTATIVAS
-                
+                chute.value = "";
+                chute.focus();
+                tentativas = tentativas + 1
+
+                if (tentativas == 3) {
+                    alert("Acabaram suas tentativas");
+                    alert("Aperte OK para jogar novamente");
+                    location.reload();
+                }
+                // IMPLEMENTAR TENTATIVAS
+
 
 
 
 
             }
 
-            var button = document.querySelector("button");
-
-            
+            var button = document.querySelector("botao");
 
 
 
@@ -147,6 +167,7 @@
 
 
 
-</script>
+        </script>
 
-</div>
+    </div>
+</body>
