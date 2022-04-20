@@ -2,10 +2,10 @@
     <meta charset="utf-8">
 
 
-    <title>---- ADIVINHAÇÃO ----</title>
+    <title>---- tiro ao alvo ----</title>
     <style>
         body {
-            background-color: rgb(138, 85, 36);
+            background-color: #363636;
             font-size: large;
         }
     </style>
@@ -13,160 +13,122 @@
 
 <body>
     <div style="text-align:center">
-
-        <br><br><br><br><br>
-
-
-        <h2>Agora tente adivinhar
-            <br>
-            algum dos números sorteados
-            <br>
-            <br>
-            Você tem 3 chances, boa sorte !!
-        </h2>
-        <br>
-        <input id="chute"/>
-        <br>
-        <br>
-
-        <button type="button" id="botao" autofocus><strong>Tentar adivinhar</strong></button>
-
+        <canvas width="400" height="600"></canvas>
 
         <script>
 
-            const textbox = document.getElementById("chute");
-            textbox.addEventListener("keypress", function onEvent(event) {
-                if (event.key === "Enter") {
-                    document.getElementById("botao").click();
-                }
-            })
+            var tempo = 1;
 
-            var input = document.getElementById("chute");
+            var tela = document.querySelector('canvas');
+            var pincel = tela.getContext('2d');
 
+            pincel.fillStyle = 'lightgray';
+            pincel.fillRect(0, 0, width, height);
+            pincel.strokeStyle = 'black';
+            pincel.strokeRect(0, 0, width, height);
 
+            var width = 400
+            var height = 600
 
-            var numero = parseInt(prompt("Escolha uma quantidade de números de 1 a 100 para serem sorteados"))
+            var raio = 10;
 
-            while (numero > 100 || numero <= 0) {
+            var xAleatorio;
+            var yAleatorio;
 
-                numero = parseInt(prompt("Escolha uma quantidade de números de 1 a 100 para serem sorteados"))
+            function contaTempo () {
+                tempo++;
+            }
+
+            function desenhaCirculo(x, y, raio, cor) {
+
+                pincel.fillStyle = cor;
+                pincel.beginPath();
+                pincel.arc(x, y, raio, 0, 2 * Math.PI);
+                pincel.fill();
+            }
+            function limpaTela() {  // RESET DO "FRAME"
+
+                pincel.clearRect(0, 0, width, height);
+                pincel.fillStyle = "lightgray";
+                pincel.fillRect(0, 0, width, height)
+                pincel.strokeStyle = 'black';
+                pincel.strokeRect(0, 0, width, height);
+            }
+
+            function sorteiaPosicao(maximo) {
+
+                return Math.floor(Math.random() * maximo);
 
             }
 
-            function sorteia() {
+            function desenhaAlvo(x, y) {
 
-                return Math.round(Math.random() * 100);
-
+                desenhaCirculo(x, y, raio + 20, 'red'); // maior círculo
+                desenhaCirculo(x, y, raio + 10, 'white');
+                desenhaCirculo(x, y, raio, 'red'); // menor circulo
             }
 
-            function sorteiaNumeros(quant) {
-
-                var segredos = [];
-                var n = 1;
-
-                while (n <= quant) {
-
-                    var nAleatorio = sorteia();
-                    var repetido = false;
-
-                    if (nAleatorio !== 0) {
+            function fps() {
 
 
 
-                        for (var posicao = 0; posicao < segredos.length; posicao++) {
+                pincel.fillStyle = 'lightgray';
+                pincel.fillRect(0, 0, width, height);
+                pincel.strokeStyle = 'black';
+                pincel.strokeRect(0, 0, width, height);
 
-                            if (segredos[posicao] == nAleatorio) {
+                xAleatorio = sorteiaPosicao(width);
+                yAleatorio = sorteiaPosicao(height);
+                limpaTela();
+                desenhaAlvo(xAleatorio, yAleatorio);
 
-                                repetido = true;
-                                break;
+            }
+            alert("TIRO AO ALVO!!");
 
-                            }
+            var timer = parseFloat(prompt("Quantos segundos para o alvo mudar de lugar? (ex: 0.5 - 0.75 - 1 - 1.5)")) * 1000;
 
+
+            setInterval(fps, timer);
+
+            setInterval(contaTempo, 1000);
+
+            pincel.fillStyle = 'lightgray';
+            pincel.fillRect(0, 0, width, height);
+            pincel.strokeStyle = 'black';
+            pincel.strokeRect(0, 0, width, height);
+
+            function tiro(evento) {
+
+                var x = evento.pageX - tela.offsetLeft;
+                var y = evento.pageY - tela.offsetTop;
+
+                if ((x > xAleatorio - raio)                 //  ---------------------- ACERTOU
+                    && (x < xAleatorio + raio)
+                    && (y > yAleatorio - raio)
+                    && (y < yAleatorio + raio)) {
+
+                        if (tempo <= 10) {
+                            alert('Mandou Jen !! Demorastes ' + tempo + ' segundos');
+                            alert("Aperte OK para jogar novamente");
+                        } else if (tempo > 10 && tempo <= 20) {
+                            alert('Tava osso? Demorastes ' + tempo + ' segundos');
+                            alert("Aperte OK para jogar novamente");
+                        } else if (tempo > 20) {
+                            alert('Vix foi osso ein? ' + tempo + ' segundos, seloco');
+                            alert("Aperte OK para jogar novamente");
                         }
 
-                        if (repetido == false) {
-
-                            segredos.push(nAleatorio);
-                            n++;
-
-                        }
-                    }
-
-                }
-                return segredos
-            }
-
-            var segredos = sorteiaNumeros(numero)
-
-            //   ---------------------------------------------------------------------- CHUTE
-
-
-            console.log(segredos);
-
-
-
-
-            var chute = document.getElementById("chute");
-            chute.focus();
-
-            var button = document.getElementById("botao");
-            button.onclick = verifica;
-
-            var tentativas = 0
-
-            function verifica() {
-
-
-
-                var achou = false
-
-                for (posicao = 0; posicao < segredos.length; posicao++) {
-
-                    if (segredos[posicao] == parseInt(chute.value)) {
-
-                        alert("Parabens !! ACERTOU !!");
-                        alert("Aperte OK para jogar novamente");
-                        achou = true;
-                        location.reload();
-
-
-                    }
-                }
-                if (achou == false) {
-                    alert("Voce Errou!");
-                }
-
-                chute.value = "";
-                chute.focus();
-                tentativas = tentativas + 1
-
-                if (achou == false && tentativas == 3) {
-                    alert("Acabaram suas tentativas");
-                    alert("Aperte OK para jogar novamente");
                     location.reload();
+
                 }
-                // IMPLEMENTAR TENTATIVAS
-
-
-
-
 
             }
 
-            var button = document.querySelector("botao");
-
-
-
-
-
-
-
-
-
-
+            tela.onclick = tiro;
 
 
         </script>
 
     </div>
+
 </body>
